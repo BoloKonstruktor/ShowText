@@ -26,6 +26,92 @@ class ShowText {
 		void(*end_scroll_callback)( void ) = NULL;
 		void(*show_callback)( const char* ) = NULL;
 		
+		String hide( void ){
+			String spaces = "";
+			uint8_t len = this->text_align == ALIGN::LEFT ? this->text_length : this->max_length;
+								
+				for( uint8_t i=0; i<len; i++ ){
+					spaces += " ";
+				}
+				
+			return spaces;
+		}
+
+		String get( void ){
+			String text = "";
+			this->scroll = false;
+			
+				if( this->text_length <= this->max_length ){
+				
+						switch( this->text_align ){
+							
+							case ALIGN::CENTER:{
+								uint8_t spbg = (this->max_length-(uint8_t)this->text_length)/2;
+								
+									for( uint8_t i=0; i<spbg; i++ ){
+										text += this->space;
+									}
+									
+								text = text+this->text_buff;
+								uint8_t spend = this->max_length-(uint8_t)text.length();
+								
+									for( uint8_t i=0; i<spend; i++ ){
+										text += this->space;
+									}
+							}break;
+							case ALIGN::RIGHT:{
+								
+									for( uint8_t i=0; i<(this->max_length-this->text_length); i++ ){
+										text += this->space;
+									}
+									
+								text = text+this->text_buff;
+							}break;
+						}
+				} else {
+					this->scroll = true;		
+					text = this->text_buff;
+					
+						if( this->spaces_on_start || this->spaces_on_end ){
+							String spaces = "";
+								
+								for( uint8_t i=0; i<this->max_length; i++ ){
+									spaces += this->space;
+								}
+								
+								if( this->spaces_on_start ) text = spaces+text;
+								
+								if( this->spaces_on_end ) text = text+spaces;
+						}
+						
+					uint16_t len = text.length()-this->max_length;
+					
+						if( this->text_position < len ){
+							this->dled = this->delay_on_end;							
+								
+								if( this->dlst ) this->dlst--;
+								else this->text_position++;
+						
+						} else {
+							this->dlst = this->delay_on_start;
+							
+								if( this->dled ) this->dled--;
+								else {
+									
+										if( this->end_scroll_callback ){
+											this->end_scroll_callback();
+										}
+									
+									this->text_position = 0;
+									this->scroll = false;
+								}
+						}
+
+					return text.substring( this->text_position, this->text_position+this->max_length );
+				}	
+		
+			return text;
+		}		
 
 	public:
 		void begin( uint8_t max_length, uint8_t begin_position=0 ){
@@ -121,82 +207,6 @@ class ShowText {
 				}
 		}
 		
-		String get( void ){
-			String text = "";
-			this->scroll = false;
-			
-				if( this->text_length <= this->max_length ){
-				
-						switch( this->text_align ){
-							
-							case ALIGN::CENTER:{
-								uint8_t spbg = (this->max_length-(uint8_t)this->text_length)/2;
-								
-									for( uint8_t i=0; i<spbg; i++ ){
-										text += this->space;
-									}
-									
-								text = text+this->text_buff;
-								uint8_t spend = this->max_length-(uint8_t)text.length();
-								
-									for( uint8_t i=0; i<spend; i++ ){
-										text += this->space;
-									}
-							}break;
-							case ALIGN::RIGHT:{
-								
-									for( uint8_t i=0; i<(this->max_length-this->text_length); i++ ){
-										text += this->space;
-									}
-									
-								text = text+this->text_buff;
-							}break;
-						}
-				} else {
-					this->scroll = true;		
-					text = this->text_buff;
-					
-						if( this->spaces_on_start || this->spaces_on_end ){
-							String spaces = "";
-								
-								for( uint8_t i=0; i<this->max_length; i++ ){
-									spaces += this->space;
-								}
-								
-								if( this->spaces_on_start ) text = spaces+text;
-								
-								if( this->spaces_on_end ) text = text+spaces;
-						}
-						
-					uint16_t len = text.length()-this->max_length;
-					
-						if( this->text_position < len ){
-							this->dled = this->delay_on_end;							
-								
-								if( this->dlst ) this->dlst--;
-								else this->text_position++;
-						
-						} else {
-							this->dlst = this->delay_on_start;
-							
-								if( this->dled ) this->dled--;
-								else {
-									
-										if( this->end_scroll_callback ){
-											this->end_scroll_callback();
-										}
-									
-									this->text_position = 0;
-									this->scroll = false;
-								}
-						}
-
-					return text.substring( this->text_position, this->text_position+this->max_length );
-				}	
-		
-			return text;
-		}
-		
 		void show( void ){
 				
 				if( this->show_callback == NULL ) return;
@@ -236,17 +246,6 @@ class ShowText {
 			this->setSpace( space );
 			this->shown = true;
 			return this->get();
-		}
-		
-		String hide( void ){
-			String spaces = "";
-			uint8_t len = this->text_align == ALIGN::LEFT ? this->text_length : this->max_length;
-								
-				for( uint8_t i=0; i<len; i++ ){
-					spaces += " ";
-				}
-				
-			return spaces;
 		}
 };
 #endif
