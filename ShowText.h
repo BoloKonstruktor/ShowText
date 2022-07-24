@@ -247,5 +247,9 @@ class ShowText {
 			this->shown = true;
 			return this->get();
 		}
+		
+		bool isScrolling( void ){
+			return (this->text_length > this->max_length) ? true : false;
+		}
 };
 #endif
