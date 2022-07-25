@@ -157,6 +157,11 @@ class ShowText {
 			this->spaces_on_end = spaces;
 		}
 		
+		void setMaxLength( uint8_t length ){
+			this->max_length = length;
+			this->max_length = this->max_length-this->begin_position;
+		}
+		
 		void setBeginPosition( uint8_t begin_position ){
 			this->begin_position = begin_position;
 			this->max_length = this->max_length-this->begin_position;
