@@ -16,9 +16,9 @@ class ShowText {
 	
 	private:
 		bool scroll = false, shown = false, spaces_on_start = false, spaces_on_end = false;
-		uint8_t max_length = 0, text_align = 0, begin_position = 0, text_position = 0;
+		uint8_t max_length = 0, text_align = 0, begin_position = 0;
 		uint8_t delay_on_start = 0, delay_on_end = 0, dlst = 0, dled = 0;
-		uint16_t text_length = 0, scroll_speed = 0;
+		uint16_t text_length = 0, scroll_speed = 0, text_position = 0;
 		uint32_t update = 0, update2 = 0;
 		TBLINK blink;
 		String text_buff = "", text = "", space = "";
@@ -106,7 +106,9 @@ class ShowText {
 									this->scroll = false;
 								}
 						}
-
+					
+					Serial.print( F("TEXT_POSITION=") );
+					Serial.println( this->text_position );
 					return text.substring( this->text_position, this->text_position+this->max_length );
 				}	
 		
