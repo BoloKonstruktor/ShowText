@@ -106,9 +106,7 @@ class ShowText {
 									this->scroll = false;
 								}
 						}
-					
-					Serial.print( F("TEXT_POSITION=") );
-					Serial.println( this->text_position );
+
 					return text.substring( this->text_position, this->text_position+this->max_length );
 				}	
 		
