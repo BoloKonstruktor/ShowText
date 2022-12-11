@@ -44,7 +44,9 @@ class ShowText {
 				if( this->text_length <= this->max_length ){
 				
 						switch( this->text_align ){
-							
+							case ALIGN::LEFT:{
+								text = this->text_buff;
+							}break;
 							case ALIGN::CENTER:{
 								uint8_t spbg = (this->max_length-(uint8_t)this->text_length)/2;
 								
