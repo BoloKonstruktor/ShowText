@@ -15,7 +15,7 @@ class ShowText {
 		}TBLINK;
 	
 	private:
-		bool scroll = false, shown = false, spaces_on_start = false, spaces_on_end = false;
+		bool scroll = false, shown = false, show_dis = false, spaces_on_start = false, spaces_on_end = false;
 		uint8_t max_length = 0, text_align = 0, begin_position = 0;
 		uint8_t delay_on_start = 0, delay_on_end = 0, dlst = 0, dled = 0;
 		uint16_t text_length = 0, scroll_speed = 0, text_position = 0;
@@ -175,6 +175,10 @@ class ShowText {
 			this->shown = this->blink.enable;
 		}
 		
+		void setShow( bool disable=false ){
+			this->show_dis = disable;
+		}
+		
 		void set( const char* text, uint8_t align=ALIGN::CENTER ){
 		
 				if( String( text ) != this->text ){
@@ -216,7 +220,7 @@ class ShowText {
 		
 		void show( void ){
 				
-				if( this->show_callback == NULL ) return;
+				if( this->show_callback == NULL || this->show_dis ) return;
 				
 			uint32_t curr = millis();
 			
